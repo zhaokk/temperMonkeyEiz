@@ -1,0 +1,153 @@
+// ==UserScript==
+// @name         EIZ letter exclude
+// @version      0.1
+// @grant    GM_addStyle
+// @match        https://eiz.com.au/app/app/order/prolist/paid
+// @require http://code.jquery.com/jquery-3.4.1.min.js
+// ==/UserScript==
+
+window.addEventListener('load', function() {
+      var zNode = document.createElement ('div');
+      zNode.innerHTML = '<div><a id="myButton" type="button">'
+        + 'Check Letter</a></div>';
+    zNode.setAttribute ('id', 'myContainer');
+    document.body.appendChild (zNode);
+    console.log("script running");
+    document.getElementById ("myButton").addEventListener (
+        "click", ButtonClickAction, false
+    );
+    var winitSkuList=["facialSteamer",
+                      "facialSteamer_short",
+                      "gymmask",
+                      "ladyshaver",
+                      "ShoeWasher",
+                      "bed rail-1.8m-green",
+                      "bed rail-1.8m-pink",
+                      "bed rail-1.8m-grey",
+                      "bed rail-2.0m-green",
+                      "bed rail-2.0m-pink",
+                      "safetyshoes2-46-black",
+                      "safetyshoes2-45-black",
+                      "safetyshoes2-44-black",
+                      "safetyshoes2-43-black",
+                      "safetyshoes2-42-black",
+                      "safetyshoes2-40-black",
+                      "safetyshoes2-39-black",
+                      "safetyshoes2-38-black",
+                      "CoolBELL173black",
+                      "CoolBELL173grey",
+                      "CoolBELL173blue",
+                      "CoolBELL156black",
+                      "CoolBELL156blue",
+                      "safetyshoes2-47-black",
+                      "baby-carrier-pink",
+                      "baby carrier-jeans blue",
+                      "baby carrier-dark blue",
+                      "oneStepHairDryer",
+                      "Petbag-black",
+                      "safetyshoes2strip-40-khaki",
+                      "safetyshoes2strip-39-khaki",
+                      "safetyshoes2strip-46-black",
+                      "safetyshoes2strip-45-black",
+                      "safetyshoes2strip-45-khaki",
+                      "safetyshoes2strip-44-black",
+                      "safetyshoes2strip-44-khaki",
+                      "safetyshoes2strip-43-black",
+                      "safetyshoes2strip-43-khaki",
+                      "safetyshoes2strip-42-black",
+                      "safetyshoes2strip-42-khaki",
+                      "safetyshoes2strip-41-black",
+                      "safetyshoes2strip-41-khaki",
+                      "safetyshoes2strip-40-black",
+                      "safetyshoes2strip-39-black",
+                      "safetyshoes2strip-46-khaki",
+                      "chair-disk-black",
+                      "cat ear headphone-pink",
+                      "cat ear headphone-purple",
+                      "cat ear headphone-blue",
+                      "CatHeaphoneNew1Color-green",
+                      "CatHeaphoneNew1Color-pink",
+                      "CatHeaphoneNew1Color-black",
+                      "makeup mirror 22 led-white",
+                      "makeup mirror 22 led-black",
+                      "iwatchbox",
+                      "shavermensilver",
+                      "car fridge-35L",
+                      "foot-massager-yikang-orange",
+                      "safetyshoes2-48-black",
+                      "safetyshoe-ys-black38",
+                      "safetyshoe-ys-black39",
+                      "safetyshoe-ys-black40",
+                      "safetyshoe-ys-black41",
+                      "safetyshoe-ys-black42",
+                      "safetyshoe-ys-black43",
+                      "safetyshoe-ys-black44",
+                      "safetyshoe-ys-black45",
+                      "safetyshoe-ys-black46",
+                      "safetyshoe-ys-black47",
+                      "safetyshoe-jb-blackyellow38",
+                      "safetyshoe-jb-blackyellow39",
+                      "safetyshoe-jb-blackyellow40",
+                      "safetyshoe-jb-blackyellow41",
+                      "safetyshoe-jb-blackyellow42",
+                      "safetyshoe-jb-blackyellow43",
+                      "safetyshoe-jb-blackyellow44",
+                      "safetyshoe-jb-blackyellow45",
+                      "safetyshoe-jb-blackyellow46",
+                      "safetyshoe-jb-blackyellow47",
+                      "safetyshoe-jb-blackyellow48"];
+    var skusWithLowPriceButParcel = ["fit-resistance-tube",
+                                     "resistance bands",
+                                     "IWHolderCharger-grey",
+                                     "Carabiner_Resistance_band",
+                                     "Premium_Resistance_band",
+                                     "essential oil-6",
+                                     "KidsBike12''-pink",
+                                     "blackheadvacuum",
+                                     "oneStepHairDryer",
+                                     "FoldablBin-Brown",
+                                     "FoldablBin-White",
+                                     "automaticsoapdispenser_white",
+                                     "Car Tray",
+                                     "manhattan_ball_1pack",
+                                     "manhattan_ball_2pack",
+                                     "suctionbowl_2pairs_Blue",
+                                     "suctionbowl_2pairs_Red"];
+    var skusWithHighPriceButLetter = ["capactivepencil_White"];
+    function ButtonClickAction (zEvent) {
+        $('.e-row').map((i,e)=>{
+            setTimeout(function(){
+                var element = $(e);
+                var text = element.text();
+                var res = text.match(/((?<=Price: \$))[ ]?((?:[0-9]{1,3}[ \.,]?)*[ \.,]?[0-9]+)/g);
+                var postage = text.match(/((?<=Postage\$))[ ]?((?:[0-9]{1,3}[ \.,]?)*[ \.,]?[0-9]+)/g);
+                var skuText = $(element.find(".text-truncate.pb-4.ng-tns-c34-15.ng-star-inserted")).text();
+                skuText = skuText.replace(" Custom Label: ","").trim();
+                res = res[0].replace(".","");
+                var intValue = parseInt(res);
+                postage = postage[0].replace(".","");
+                var postageValue = parseInt(postage);
+                if(intValue < 2800 && postageValue<1 && skusWithLowPriceButParcel.indexOf(skuText)==-1 || skusWithHighPriceButLetter.indexOf(skuText)!=-1 || winitSkuList.indexOf(skuText)!=-1){
+                    element.find(".e-checkselect")[0].click();
+                    console.log(skuText+" checked");
+                }
+            }, 100);
+        })
+    }
+    //--- Style our newly added elements using CSS.
+GM_addStyle ( `
+    #myContainer {
+     position: absolute;
+    top: 1.3rem;
+    right: 29rem;
+    font-size: 20px;
+    margin: 5px;
+    opacity: 0.9;
+    z-index: 9900;
+    }
+    #myButton {
+        cursor:                 pointer;
+    }
+` );
+}, false);
+
